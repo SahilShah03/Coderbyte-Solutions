@@ -9,45 +9,14 @@ let varOcg = [];
 https.get('https://coderbyte.com/api/challenges/json/age-counting', (resp) => {
   let data = '';
 
-  // A chunk of data has been received.
-  resp.on('data', (chunk) => {
-    data += chunk;
-  });
-
-  // The whole response has been received.
+  resp.on('data', (chunk) => { data += chunk; });
   resp.on('end', () => {
-    const json = JSON.parse(data);
-    const items = json.data.split(', ');
-    
-    // Process the items to find keys with age 32
-    for (let i = 0; i < items.length; i += 2) {
-      const keyValue = items[i].split('=')[1];
-      const ageValue = parseInt(items[i + 1].split('=')[1], 10);
-
-      if (ageValue === 32) {
-        varOcg.push(keyValue);
-      }
-    }
-
-    // Write keys to output.txt file
-    const fileStream = fs.createWriteStream('output.txt');
-    varOcg.forEach(key => fileStream.write(key + '\n'));
-    fileStream.end('\n', () => {
-      // Calculate and print SHA1 hash of the file
-      const hash = crypto.createHash('sha1');
-      const input = fs.createReadStream('output.txt');
-      
-      input.on('readable', () => {
-        const data = input.read();
-        if (data) {
-          hash.update(data);
-        } else {
-          console.log(hash.digest('hex'));
-        }
-      });
+    JSON.parse(data).data.split(', ').forEach((item, index, arr) => {
+      if (item.startsWith('age=32')) varOcg.push(arr[index - 1].split('=')[1]);
     });
-  });
 
-}).on('error', (err) => {
-  console.log('Error: ' + err.message);
-});
+    fs.writeFileSync('output.txt', varOcg.join('\n') + '\n');
+    const hash = crypto.createHash('sha1').update(fs.readFileSync('output.txt')).digest('hex');
+    console.log(hash);
+  });
+}).on('error', (err) => { console.log('Error: ' + err.message); });
