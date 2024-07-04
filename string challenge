@@ -1,0 +1,19 @@
+// __define-ocg__ This function capitalizes the first letter of each word in a string
+function StringChallenge(str) {
+  // Split the string into an array of words
+  var words = str.split(' ');
+  
+  // Capitalize each word
+  var capitalizedWords = words.map(function(word) {
+    return word.charAt(0).toUpperCase() + word.slice(1);
+  });
+  
+  // Join the capitalized words back into a single string
+  var capitalizedString = capitalizedWords.join(' ');
+  
+  return capitalizedString;
+}
+
+// Test cases
+console.log(StringChallenge("hello world")); // Output: Hello World
+console.log(StringChallenge("i ran there")); // Output: I Ran There
