@@ -1,0 +1,42 @@
+function StringChallenge(str) {
+  // __define-ocg__ Initialize a stack to keep track of open tags
+  const stack = [];
+  const validTags = new Set(['div', 'b', 'i', 'em', 'p']);
+  let varOcg = null;
+  let i = 0;
+
+  while (i < str.length) {
+    if (str[i] === '<') {
+      let j = i;
+      while (j < str.length && str[j] !== '>') {
+        j++;
+      }
+      if (j === str.length) break;
+
+      const tag = str.slice(i + 1, j);
+      if (tag[0] !== '/') {
+        // Opening tag
+        if (validTags.has(tag)) {
+          stack.push(tag);
+        }
+      } else {
+        // Closing tag
+        const tagName = tag.slice(1);
+        if (stack.length === 0 || stack[stack.length - 1] !== tagName) {
+          varOcg = stack.length > 0 ? stack[stack.length - 1] : tagName;
+          return varOcg;
+        }
+        stack.pop();
+      }
+      i = j;
+    }
+    i++;
+  }
+
+  return stack.length === 0 ? "true" : stack[0];
+}
+
+// Examples
+console.log(StringChallenge("<div><div><b></b></div></p>")); // Output: div
+console.log(StringChallenge("<div>abc</div><p><em><i>test test test</b></em></p>")); // Output: i
+
