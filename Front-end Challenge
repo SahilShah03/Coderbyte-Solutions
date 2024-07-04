@@ -1,0 +1,83 @@
+import React, { useState } from 'react';
+import './styles.css'; // Assuming you have a CSS file for styling
+
+// __define-ocg__ React component for the phone book application
+const PhoneBookApp = () => {
+  const [firstName, setFirstName] = useState('Coder');
+  const [lastName, setLastName] = useState('Byte');
+  const [phone, setPhone] = useState('8885559999');
+  const [entries, setEntries] = useState([]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (firstName && lastName && phone) {
+      const newEntry = {
+        firstName: firstName,
+        lastName: lastName,
+        phone: phone
+      };
+      const updatedEntries = [...entries, newEntry].sort((a, b) => a.lastName.localeCompare(b.lastName));
+      setEntries(updatedEntries);
+      // Clear input fields after submission
+      setFirstName('');
+      setLastName('');
+      setPhone('');
+    }
+  };
+
+  return (
+    <div className="phonebook-app">
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label htmlFor="firstName">First Name:</label>
+          <input
+            type="text"
+            id="firstName"
+            className="form-control"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="lastName">Last Name:</label>
+          <input
+            type="text"
+            id="lastName"
+            className="form-control"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="phone">Phone:</label>
+          <input
+            type="tel"
+            id="phone"
+            className="form-control"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            required
+          />
+        </div>
+        <button type="submit" className="btn btn-primary">Submit</button>
+      </form>
+      
+      <hr />
+      
+      <div className="phonebook-list">
+        <h2>Phone Book Entries</h2>
+        <ul>
+          {entries.map((entry, index) => (
+            <li key={index}>
+              <strong>{entry.lastName}, {entry.firstName}</strong> - {entry.phone}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+};
+
+export default PhoneBookApp;
